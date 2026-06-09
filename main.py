@@ -1,6 +1,7 @@
 
-from translator.TranslatorClient import TranslatorClient
-from app.App import get_user_input
+from src.wikipedia_client.wikipedia_client import WikipediaClient
+from src.translator.translator_client import TranslatorClient
+from src.app.app  import get_user_input
 
 #UI
 text = get_user_input("What would you like to translate?")
