@@ -3,24 +3,16 @@ class InputValidator:
 
     @staticmethod
     def validate_topic(topic: str) -> str:
-        if not isinstance(topic, str):
-            raise TypeError("El tema debe ser un texto")
-
         topic = topic.strip()
         if not topic:
             raise ValueError("El tema no puede estar vacío")
-
         return topic
 
     @staticmethod
     def validate_language(language: str) -> str:
-        if not isinstance(language, str):
-            raise TypeError("El idioma debe ser un texto")
-
         lang = language.strip().lower()
         if lang not in InputValidator.SUPPORTED_LANGUAGES:
             raise ValueError(f"Idioma no soportado: {lang}")
-
         return lang
 
     @staticmethod
