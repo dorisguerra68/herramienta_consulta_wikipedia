@@ -30,7 +30,11 @@ class WikipediaClient:
         return f"{self.BASE_URL}{normalized}"
 
     def download_html(self, url: str) -> str:
-        response = requests.get(url)
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+        }
+
+        response = requests.get(url, headers=headers)
 
         if response.status_code != 200:
             raise Exception(f"Error al acceder a Wikipedia: {response.status_code}")

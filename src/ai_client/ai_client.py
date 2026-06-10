@@ -1,11 +1,13 @@
+from google.genai import Client
+
 class AIClient:
     """
     Cliente responsable de comunicarse con el modelo de IA para enriquecer texto.
-    El modelo se inyecta desde fuera para facilitar pruebas y desacoplar dependencias.
     """
 
-    def __init__(self, model):
-        self.model = model
+    def __init__(self, api_key: str):
+        # Creamos el cliente oficial de Gemini
+        self.client = Client(api_key=api_key)
 
     def enrich_text(self, text: str) -> str:
         """
@@ -17,5 +19,9 @@ class AIClient:
             f"{text}"
         )
 
-        response = self.model.generate_content(prompt)
+        response = self.client.models.generate_content(
+            model="gemini-1.5-flash",
+            contents=prompt
+        )
+
         return response.text
