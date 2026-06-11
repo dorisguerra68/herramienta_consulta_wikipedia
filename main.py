@@ -1,6 +1,8 @@
 from dotenv import load_dotenv
 import os
 
+
+
 from src.ai_client.ai_client import AIClient
 from src.wikipedia_client.wikipedia_client import WikipediaClient
 from src.content_enricher.content_enricher import ContentEnricher
@@ -17,7 +19,7 @@ def main():
 
     # Inicio, entrada del usuario
     topic = InputValidator.validate_topic(input("Introduce el tema a consultar: "))
-    language = InputValidator.validate_language(input("En qué idioma (es/en/fr/de/it/pt): "))
+    language = "es"
 
     # Instancias
     ai_client = AIClient(api_key)
@@ -62,7 +64,10 @@ def main():
         if fmt == "txt":
             file_manager.save_txt(filename, final_text)
         else:
-            file_manager.save_pdf(filename, final_text)
+            pdf = FileManager.PdfService()
+            pdf.add_title(topic)
+            pdf.add_paragraph(final_text)
+            pdf.save_pdf(filename)
 
         print("\n✔ Contenido guardado.\n")
     else:
@@ -70,4 +75,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+   main()
