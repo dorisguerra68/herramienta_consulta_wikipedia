@@ -24,13 +24,31 @@ class WikipediaClient:
         }
 
     def normalized_topic(self, topic: str) -> str:
-        return topic.strip().replace(" ", "_")
+        """
+        Limpia el texto introducido por el usuario:
+        - Quita espacios
+        - Pone mayúsculas correctas
+        - Elimina artículos (La, El, Los, Las)
+        - Reemplaza espacios por _
+        """
+        topic = topic.strip().title()
+
+        articulos = ["La ", "El ", "Los ", "Las "]
+        for art in articulos:
+            if topic.startswith(art):
+                topic = topic[len(art):]
+
+        return topic.replace(" ", "_")
 
     def _build_url(self, normalized: str) -> str:
         return f"{self.BASE_URL}{normalized}"
 
     def download_html(self, url: str) -> str:
-        response = requests.get(url)
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+        }
+
+        response = requests.get(url, headers=headers)
 
         if response.status_code != 200:
             raise Exception(f"Error al acceder a Wikipedia: {response.status_code}")
@@ -44,21 +62,15 @@ class WikipediaClient:
         return h1.text.strip()
 
     def extract_paragraphs(self, soup: BeautifulSoup) -> list:
-        paragraphs = []
+        content_div = soup.find("div", class_="mw-parser-output")
 
-        content_div = soup.find(class_="mw-parser-output")
-        p_tags = content_div.find_all("p", recursive=False) if content_div else soup.find_all("p")
+        if not content_div:
+            content_div = soup.find("div", {"id": "bodyContent"})
 
-        for p in p_tags:
-            text = p.get_text(strip=True)
+        if not content_div:
+            content_div = soup
 
-            if text:
-                paragraphs.append(text)
+        p_tags = content_div.find_all("p", recursive=True)
+        paragraphs = [p.get_text(strip=True) for p in p_tags]
 
-            if len(paragraphs) == 5:
-                break
-
-        if not paragraphs:
-            raise Exception("No se encontraron párrafos válidos en el artículo.")
-
-        return paragraphs
+        return paragraphs[:5]
