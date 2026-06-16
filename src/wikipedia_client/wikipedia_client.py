@@ -24,13 +24,8 @@ class WikipediaClient:
         }
 
     def normalized_topic(self, topic: str) -> str:
-        """
-        Limpia el texto introducido por el usuario:
-        - Quita espacios
-        - Pone mayúsculas correctas
-        - Elimina artículos (La, El, Los, Las)
-        - Reemplaza espacios por _
-        """
+
+
         topic = topic.strip().title()
 
         articulos = ["La ", "El ", "Los ", "Las "]
